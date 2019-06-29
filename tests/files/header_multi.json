@@ -1,0 +1,24 @@
+[
+    {
+        "type": "HEADER",
+        "raw": ["# multi line", "# header {#anchor}"],
+        "text": ["multi line", "header"],
+        "level": 1,
+        "anchor": "anchor"
+    },
+    {
+        "type": "TEXT",
+        "raw": [""]
+    },
+    {
+        "type": "HEADER",
+        "raw": ["# other multi line {#anchor}", "# header"],
+        "text": ["other multi line", "header"],
+        "level": 1,
+        "anchor": "anchor"
+    },
+    {
+        "type": "TEXT",
+        "raw": [""]
+    }
+]
