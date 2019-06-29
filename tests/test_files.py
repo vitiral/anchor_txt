@@ -1,8 +1,13 @@
+"""
+This uses the data in tests/files
+- The *.md files contain what should be parsed.
+- The *.json files contain what is expected.
+"""
 
 import os
 import json
 import unittest
-import mdsplit
+from anchor import mdsplit
 
 SCRIPT_PATH = os.path.realpath(__file__)
 TEST_DIR = os.path.dirname(SCRIPT_PATH)
@@ -23,7 +28,7 @@ def read_json(path):
 def file_test(name):
     expected = read_json(os.path.join(FILES_DIR, name + '.json'))
     md = read(os.path.join(FILES_DIR, name + '.md'))
-    assert expected == mdsplit.split(md), "file=" + name
+    assert expected == mdsplit.split(md), "for file " + name
 
 
 class TestFiles(unittest.TestCase):
@@ -38,3 +43,6 @@ class TestFiles(unittest.TestCase):
 
     def test_header_multi(self):
         file_test('header_multi')
+
+    def test_code_fence(self):
+        file_test('code-fence')

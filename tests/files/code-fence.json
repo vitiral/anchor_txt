@@ -1,0 +1,20 @@
+[
+    {
+        "type": "HEADER",
+        "raw": ["# code"],
+        "text": ["code"],
+        "level": 1,
+        "anchor": null
+    },
+    {
+        "type": "CODE",
+        "raw": ["```fence", "this is code", "```"],
+        "text": ["this is code"],
+        "identifier": "fence"
+    },
+    {
+        "type": "TEXT",
+        "raw": [""]
+    }
+]
+

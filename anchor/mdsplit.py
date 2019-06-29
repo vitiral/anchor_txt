@@ -16,7 +16,7 @@ HEADER_RE = re.compile(r'''
 '''
 , re.VERBOSE)
 
-FENCE_RE = re.compile(r'^```(?P<iden>[^`]*)$')
+FENCE_RE = re.compile(r'^```\s*(?P<iden>[^`]*?)\s*$')
 EMPTY_RE = re.compile(r'^\s*$')
 
 BLOCK_MAYBE_RE = re.compile(r'    [^ ].*$')
@@ -86,14 +86,16 @@ class CodeBuilder(object):
         self.is_indented = is_indented
         self.identifier = identifier
         self.raw_lines = [raw_start]
-        self.text_lines = []
+        self.text = []
+        if is_indented:
+            self.text.append(raw_start)
 
     def append(self, line):
         self.raw_lines.append(line)
         if self.is_indented:
-            self.text_lines.append(line[4:])
+            self.text.append(line[4:])
         else:
-            self.text_lines.append(line)
+            self.text.append(line)
 
     def append_raw(self, raw_line):
         self.raw_lines.append(raw_line)
@@ -139,6 +141,8 @@ def from_dict(dct):
         return Text(raw=dct['raw'])
     elif dct['type'] == 'HEADER':
         return Header(raw=dct['raw'], level=dct['level'], anchor=dct['anchor'], text=dct['text'])
+    elif dct['type'] == 'CODE':
+        return Code(raw=dct['raw'], text=dct['text'], identifier=dct['identifier'])
     else:
         raise TypeError("Invalid dct: {}", dct)
 
@@ -155,8 +159,9 @@ def split(md_text):
         # Code indented
         mat = BLOCK_MAYBE_RE.match(line)
         if (mat
-                and code_builder is None
-                and tokens and isinstance(tokens[-1], Text)
+                and not code_builder
+                and tokens
+                and isinstance(tokens[-1], Text)
                 and tokens[-1].raw[-1] == ""):
             code_builder = CodeBuilder(line, True, None)
             continue
@@ -179,10 +184,13 @@ def split(md_text):
                 code_builder.append_raw(line)
                 tokens.append(code_builder.build())
                 code_builder = None
-                continue
             else:
-                code_builder = CodeBuilder(line, False, mat[KEY_CODE_IDENTIFIER])
-                continue
+                code_builder = CodeBuilder(line, False, mat.groupdict()[KEY_CODE_IDENTIFIER])
+            continue
+
+        if code_builder:
+            code_builder.append(line)
+            continue
 
         # Headers
         mat = HEADER_RE.match(line)
