@@ -8,14 +8,14 @@ from anchor import attributes
 SCRIPT_PATH = os.path.realpath(__file__)
 TEST_DIR = os.path.dirname(SCRIPT_PATH)
 SPLITS_DIR = os.path.join(TEST_DIR, "splits")
-ATTRS_DIR = os.path.join(TEST_DIR, "attrs")
+ATTRS_DIR = os.path.join(TEST_DIR, "attributes")
 
 
 def read(path):
     with open(path) as f:
         return f.read()
 
-def read_json(path):
+def split_read_json(path):
     with open(path) as f:
         j = json.load(f)
 
@@ -23,14 +23,15 @@ def read_json(path):
 
 
 def split_test(name):
-    expected = read_json(os.path.join(SPLITS_DIR, name + '.json'))
+    expected = split_read_json(os.path.join(SPLITS_DIR, name + '.json'))
     md = read(os.path.join(SPLITS_DIR, name + '.md'))
     assert expected == mdsplit.split(md), "for file " + name
 
 
 def attr_test(name):
-    expected = read_json(os.path.join(SPLITS_DIR, name + '.json'))
-    md_path = os.path.join(SPLITS_DIR, name + '.md')
+    with open(os.path.join(ATTRS_DIR, name + '.json')) as f:
+        expected = attributes.Section.from_dict(json.load(f))
+    md_path = os.path.join(ATTRS_DIR, name + '.md')
     assert expected == attributes.Section.from_md_path(md_path), "for file " + name
 
 
@@ -58,4 +59,4 @@ class TestSplit(unittest.TestCase):
 
 class TestAttributes(unittest.TestCase):
     def test_word(self):
-        pass
+        attr_test('word')

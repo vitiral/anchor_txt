@@ -13,11 +13,13 @@ ATTR_INLINE_RE = re.compile(r"`@(.*)`")
 
 
 class Section(object):
+    TYPE = 'SECTION'
+
     def __init__(self, parent, header, attributes, sections, contents):
         self._parent = parent
         self.header = header
         self.attributes = attributes
-        self.sections = section
+        self.sections = sections
         self.contents = contents
 
     @classmethod
@@ -33,7 +35,7 @@ class Section(object):
     def from_md(cls, filename, md_text):
         components = mdsplit.split(md_text)
         root = cls.new(None, None)
-        curent_section = root
+        current_section = root
 
         for cmt in components:
             if isinstance(cmt, mdsplit.Header):
@@ -59,6 +61,7 @@ class Section(object):
 
     @classmethod
     def from_dict(cls, dct):
+        assert dct['type'] == cls.TYPE
         parent = dct.get('parent')
         section = cls(
             parent=None,
@@ -69,6 +72,8 @@ class Section(object):
 
         for child in section.sections:
             child._parent = section
+
+        return section
 
     def update_attributes(self, attributes):
         utils.update_dict(self.attributes, attributes)
@@ -83,8 +88,9 @@ class Section(object):
     def __eq__(self, other):
         return isinstance(other, self.__class__) and other._tuple() == self._tuple()
 
+    def __repr__(self):
+        return "Section(header={}, attributes={}, sections={}, contents={})".format(
+                self.header, self.attributes, self.sections, self.contents)
+
     def _tuple(self):
         return (self.header, self.attributes, self.sections, self.contents)
-
-
-
