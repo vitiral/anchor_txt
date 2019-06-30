@@ -60,3 +60,6 @@ class TestSplit(unittest.TestCase):
 class TestAttributes(unittest.TestCase):
     def test_word(self):
         attr_test('word')
+
+    def test_header(self):
+        attr_test('header')
