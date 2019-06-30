@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 # Splits the file and pull out attributes and sections
 
 import os
@@ -39,7 +40,12 @@ class Section(object):
 
         for cmt in components:
             if isinstance(cmt, mdsplit.Header):
-                new_section = Section(cmt)
+                if current_section.header is None or cmt.level < current_section.header.level:
+                    parent = current_section
+                else:
+                    parent = current_section.parent
+
+                new_section = Section.new(parent=parent, header=cmt)
                 current_section.append_section(new_section)
                 current_section = new_section
             elif isinstance(cmt, mdsplit.Code):
@@ -58,6 +64,15 @@ class Section(object):
         filename = os.path.basename(path)
         with open(path) as f:
             return cls.from_md(filename, f.read())
+
+    def to_dict(self):
+        return {
+            "type": self.TYPE,
+            "header": self.header.to_dict() if self.header else None,
+            "attributes": self.attributes,
+            "sections": [s.to_dict() for s in self.sections],
+            "contents": [c.to_dict() for c in self.contents],
+        }
 
     @classmethod
     def from_dict(cls, dct):
@@ -79,7 +94,7 @@ class Section(object):
         utils.update_dict(self.attributes, attributes)
 
     def append_section(self, section):
-        assert section.level > 0
+        assert section.header.level > 0
         if self.header is None or section.header.level < self.header.level:
             self.sections.append(section)
         else:
@@ -89,8 +104,7 @@ class Section(object):
         return isinstance(other, self.__class__) and other._tuple() == self._tuple()
 
     def __repr__(self):
-        return "Section(header={}, attributes={}, sections={}, contents={})".format(
-                self.header, self.attributes, self.sections, self.contents)
+        return "Section(header={}, sections={})".format(self.header, self.sections)
 
     def _tuple(self):
         return (self.header, self.attributes, self.sections, self.contents)

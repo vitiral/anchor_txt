@@ -15,24 +15,23 @@ def read(path):
     with open(path) as f:
         return f.read()
 
-def split_read_json(path):
+def read_json(path):
     with open(path) as f:
-        j = json.load(f)
-
-    return [mdsplit.from_dict(o) for o in j]
+        return json.load(f)
 
 
 def split_test(name):
-    expected = split_read_json(os.path.join(SPLITS_DIR, name + '.json'))
+    expected = read_json(os.path.join(SPLITS_DIR, name + '.json'))
     md = read(os.path.join(SPLITS_DIR, name + '.md'))
-    assert expected == mdsplit.split(md), "for file " + name
+    result = [c.to_dict() for c in mdsplit.split(md)]
+    assert expected == result, "for file " + name
 
 
 def attr_test(name):
-    with open(os.path.join(ATTRS_DIR, name + '.json')) as f:
-        expected = attributes.Section.from_dict(json.load(f))
+    expected = read_json(os.path.join(ATTRS_DIR, name + '.json'))
     md_path = os.path.join(ATTRS_DIR, name + '.md')
-    assert expected == attributes.Section.from_md_path(md_path), "for file " + name
+    result = attributes.Section.from_md_path(md_path).to_dict()
+    assert expected == result, "for file " + name
 
 
 class TestSplit(unittest.TestCase):

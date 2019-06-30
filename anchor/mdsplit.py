@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import re
 
 KEY_TEXT = "text"
@@ -120,6 +121,7 @@ class Header(object):
         return {
             "type": self.TYPE,
             "raw": self.raw,
+            "level": self.level,
             "anchor": self.anchor,
             "text": self.text,
         }
