@@ -22,6 +22,86 @@ EMPTY_RE = re.compile(r'^\s*$')
 BLOCK_MAYBE_RE = re.compile(r'    [^ ].*$')
 
 
+def split(md_text):
+    """Split the markdown text into its components."""
+    lines = md_text.split('\n')
+
+    components = []
+
+    code_builder = None
+
+    for line in lines:
+        line = unicode(line)
+        # Code indented
+        mat = BLOCK_MAYBE_RE.match(line)
+        if (mat
+                and not code_builder
+                and components
+                and isinstance(components[-1], Text)
+                and components[-1].raw[-1] == ""):
+            code_builder = CodeBuilder(line, True, None)
+            continue
+
+        if code_builder and code_builder.is_indented:
+            if mat or EMPTY_RE.match(line):
+                # append an indented or empty line
+                code_builder.append(line)
+                continue
+            else:
+                components.append(code_builder.build())
+                code_builder = None
+                # don't continue, let other lexers look at line
+
+        # Code fence (```)
+        mat = FENCE_RE.match(line)
+        if mat:
+            if code_builder:
+                # we already have a code builder, so this must be ending the code section
+                code_builder.append_raw(line)
+                components.append(code_builder.build())
+                code_builder = None
+            else:
+                code_builder = CodeBuilder(line, False, mat.groupdict()[KEY_CODE_IDENTIFIER])
+            continue
+
+        if code_builder:
+            code_builder.append(line)
+            continue
+
+        # Headers
+        mat = HEADER_RE.match(line)
+        if mat is not None:
+            groups = mat.groupdict()
+            header = Header(
+                raw=[mat.group(0)],
+                level=len(groups[KEY_LEVEL]),
+                anchor=groups[KEY_ANCHOR],
+                text=[groups[KEY_TEXT]],
+            )
+
+            if (components
+                    and isinstance(components[-1], Header)
+                    and components[-1].level == header.level):
+                # If the last line was a header of the same level, merge them
+                components[-1].text.extend(header.text)
+                components[-1].raw.extend(header.raw)
+                if header.anchor is not None:
+                    components[-1].anchor = header.anchor
+            else:
+                components.append(header)
+            continue
+
+        if components and isinstance(components[-1], Text):
+            components[-1].append(line)
+        else:
+            components.append(Text([line]))
+
+    if code_builder:
+        components.append(code_builder.build())
+
+    return components
+
+
 class Header(object):
     TYPE = "HEADER"
 
@@ -147,80 +227,3 @@ def from_dict(dct):
         raise TypeError("Invalid dct: {}", dct)
 
 
-def split(md_text):
-    lines = md_text.split('\n')
-
-    tokens = []
-
-    code_builder = None
-
-    for line in lines:
-        line = unicode(line)
-        # Code indented
-        mat = BLOCK_MAYBE_RE.match(line)
-        if (mat
-                and not code_builder
-                and tokens
-                and isinstance(tokens[-1], Text)
-                and tokens[-1].raw[-1] == ""):
-            code_builder = CodeBuilder(line, True, None)
-            continue
-
-        if code_builder and code_builder.is_indented:
-            if mat or EMPTY_RE.match(line):
-                # append an indented or empty line
-                code_builder.append(line)
-                continue
-            else:
-                tokens.append(code_builder.build())
-                code_builder = None
-                # don't continue, let other lexers look at line
-
-        # Code fence (```)
-        mat = FENCE_RE.match(line)
-        if mat:
-            if code_builder:
-                # we already have a code builder, so this must be ending the code section
-                code_builder.append_raw(line)
-                tokens.append(code_builder.build())
-                code_builder = None
-            else:
-                code_builder = CodeBuilder(line, False, mat.groupdict()[KEY_CODE_IDENTIFIER])
-            continue
-
-        if code_builder:
-            code_builder.append(line)
-            continue
-
-        # Headers
-        mat = HEADER_RE.match(line)
-        if mat is not None:
-            groups = mat.groupdict()
-            header = Header(
-                raw=[mat.group(0)],
-                level=len(groups[KEY_LEVEL]),
-                anchor=groups[KEY_ANCHOR],
-                text=[groups[KEY_TEXT]],
-            )
-
-            if (tokens
-                    and isinstance(tokens[-1], Header)
-                    and tokens[-1].level == header.level):
-                # If the last line was a header of the same level, merge them
-                tokens[-1].text.extend(header.text)
-                tokens[-1].raw.extend(header.raw)
-                if header.anchor is not None:
-                    tokens[-1].anchor = header.anchor
-            else:
-                tokens.append(header)
-            continue
-
-        if tokens and isinstance(tokens[-1], Text):
-            tokens[-1].append(line)
-        else:
-            tokens.append(Text([line]))
-
-    if code_builder:
-        tokens.append(code_builder.build())
-
-    return tokens

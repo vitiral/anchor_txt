@@ -25,24 +25,29 @@ def read_json(path):
     return [mdsplit.from_dict(o) for o in j]
 
 
-def file_test(name):
+def split_test(name):
     expected = read_json(os.path.join(FILES_DIR, name + '.json'))
     md = read(os.path.join(FILES_DIR, name + '.md'))
     assert expected == mdsplit.split(md), "for file " + name
 
 
-class TestFiles(unittest.TestCase):
+class TestSplit(unittest.TestCase):
     def test_word(self):
-        file_test('word')
+        split_test('word')
 
     def test_header(self):
-        file_test('header')
+        split_test('header')
 
     def test_anchor(self):
-        file_test('anchor')
+        split_test('anchor')
 
     def test_header_multi(self):
-        file_test('header_multi')
+        split_test('header_multi')
 
     def test_code_fence(self):
-        file_test('code-fence')
+        split_test('code-fence')
+
+
+class TestAttributes(unittest.TestCase):
+    def test_word(self):
+        pass
