@@ -1,17 +1,14 @@
-"""
-This uses the data in tests/files
-- The *.md files contain what should be parsed.
-- The *.json files contain what is expected.
-"""
 
 import os
 import json
 import unittest
 from anchor import mdsplit
+from anchor import attributes
 
 SCRIPT_PATH = os.path.realpath(__file__)
 TEST_DIR = os.path.dirname(SCRIPT_PATH)
-FILES_DIR = os.path.join(TEST_DIR, "files")
+SPLITS_DIR = os.path.join(TEST_DIR, "splits")
+ATTRS_DIR = os.path.join(TEST_DIR, "attrs")
 
 
 def read(path):
@@ -26,12 +23,23 @@ def read_json(path):
 
 
 def split_test(name):
-    expected = read_json(os.path.join(FILES_DIR, name + '.json'))
-    md = read(os.path.join(FILES_DIR, name + '.md'))
+    expected = read_json(os.path.join(SPLITS_DIR, name + '.json'))
+    md = read(os.path.join(SPLITS_DIR, name + '.md'))
     assert expected == mdsplit.split(md), "for file " + name
 
 
+def attr_test(name):
+    expected = read_json(os.path.join(SPLITS_DIR, name + '.json'))
+    md_path = os.path.join(SPLITS_DIR, name + '.md')
+    assert expected == attributes.Section.from_md_path(md_path), "for file " + name
+
+
 class TestSplit(unittest.TestCase):
+    """
+    This uses the data in tests/splits
+    - The *.md files contain what should be parsed.
+    - The *.json files contain what is expected.
+    """
     def test_word(self):
         split_test('word')
 

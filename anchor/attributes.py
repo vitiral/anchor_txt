@@ -3,9 +3,9 @@
 import os
 import re
 
-import pyyaml
+import yaml
 
-from . import update_dict
+from . import utils
 from . import mdsplit
 
 ATTR_IDENTIFIER_RE = re.compile(r"^yaml.*\s@$")
@@ -42,7 +42,7 @@ class Section(object):
                 current_section = new_section
             elif isinstance(cmt, mdsplit.Code):
                 if cmt.identifier and ATTR_IDENTIFIER_RE.match(cmt.identifier):
-                    current_section.update_attributes(pyyaml.load(cmt.text))
+                    current_section.update_attributes(yaml.load(cmt.text))
                 current_section.contents.append(cmt)
             else:
                 assert isinstance(cmt, mdsplit.Text)
@@ -71,7 +71,7 @@ class Section(object):
             child._parent = section
 
     def update_attributes(self, attributes):
-        update_dict(self.attributes, attributes)
+        utils.update_dict(self.attributes, attributes)
 
     def append_section(self, section):
         assert section.level > 0
