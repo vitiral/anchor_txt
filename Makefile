@@ -1,11 +1,10 @@
 check: lint test fix
 	# SHIP IT!
 
-ship: check upload
+ship: check
 	py3/bin/python setup.py sdist
+	# run: py3/bin/twine upload dist/*
 
-upload: check
-	py3/bin/twine upload sdist/*
 
 init:
 	# python2
