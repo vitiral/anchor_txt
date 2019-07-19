@@ -37,7 +37,6 @@ def main(argv):
     """Main function for cmdline."""
     import sys
     import argparse
-    import yaml
 
     parser = argparse.ArgumentParser(
         description=

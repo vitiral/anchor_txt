@@ -20,7 +20,6 @@ Section object
 from __future__ import unicode_literals
 # Splits the file and pull out attributes and sections
 
-import os
 import re
 import six
 
@@ -33,31 +32,33 @@ ATTR_IDENTIFIER_RE = re.compile(r"^yaml .*@$")
 ATTR_INLINE_RE = re.compile(r"`@{(.*?)}`")
 
 
-class Section(object):
+class Section:
+    """A section of markdown.
+
+    This is either:
+    - the entire markdown file (root section)
+    - a section of markdown with a header at the top
+    """
+
     TYPE = 'SECTION'
 
+    #pylint: disable=too-many-arguments
     def __init__(self, parent, header, attributes, sections, contents):
-        self._parent = parent
+        self.parent = parent
         self.header = header
         self.attributes = attributes
         self.sections = sections
         self.contents = contents
 
-    @classmethod
-    def new(cls, parent, header):
-        return cls(parent=parent,
-                   header=header,
-                   attributes={},
-                   sections=[],
-                   contents=[])
-
     def is_root(self):
+        """Return whether this is the root/document Section."""
         return self.header is None
 
     @classmethod
-    def from_md(cls, filename, md_text):
+    def from_md(cls, md_text):
+        """Convert a markdown file to a Section."""
         components = mdsplit.split(md_text)
-        root = cls.new(None, None)
+        root = _create_new_section(cls, None, None)
         current_section = root
 
         # Loop through the components, adding them to the correct section
@@ -68,15 +69,18 @@ class Section(object):
                 ) or cmt.level < current_section.header.level:
                     parent = current_section
                 else:
-                    parent = current_section._parent
+                    parent = current_section.parent
 
-                new_section = Section.new(parent=parent, header=cmt)
+                new_section = _create_new_section(cls,
+                                                  parent=parent,
+                                                  header=cmt)
                 _append_section(current_section, new_section)
                 current_section = new_section
             elif isinstance(cmt, mdsplit.Code):
                 if cmt.is_attributes:
                     code_txt = '\n'.join(cmt.text)
-                    current_section.update_attributes(yaml.safe_load(code_txt))
+                    _update_attributes(current_section,
+                                       yaml.safe_load(code_txt))
                 current_section.contents.append(cmt)
             else:
                 assert isinstance(cmt, mdsplit.Text)
@@ -86,7 +90,7 @@ class Section(object):
                             match.group(1)))
                         if isinstance(value, six.text_type):
                             value = {value: None}
-                        current_section.update_attributes(value)
+                        _update_attributes(current_section, value)
 
                 current_section.contents.append(cmt)
 
@@ -94,11 +98,12 @@ class Section(object):
 
     @classmethod
     def from_md_path(cls, path):
-        filename = os.path.basename(path)
-        with open(path) as f:
-            return cls.from_md(filename, f.read())
+        """Convert a markdown file at a path to a Section."""
+        with open(path) as fdesc:
+            return cls.from_md(fdesc.read())
 
     def to_dict(self):
+        """serialize."""
         return {
             "type": self.TYPE,
             "header": self.header.to_dict() if self.header else None,
@@ -109,8 +114,8 @@ class Section(object):
 
     @classmethod
     def from_dict(cls, dct):
+        """deserialize"""
         assert dct['type'] == cls.TYPE
-        parent = dct.get('parent')
         section = cls(parent=None,
                       header=dct['header'],
                       attributes=dct['attributes'],
@@ -118,13 +123,11 @@ class Section(object):
                       contents=[mdsplit.from_dict(o) for o in dct['contents']])
 
         for child in section.sections:
-            child._parent = section
+            child.parent = section
 
         return section
 
-    def update_attributes(self, attributes):
-        utils.update_dict(self.attributes, attributes)
-
+    #pylint: disable=protected-access
     def __eq__(self, other):
         return isinstance(other,
                           self.__class__) and other._tuple() == self._tuple()
@@ -135,6 +138,19 @@ class Section(object):
 
     def _tuple(self):
         return (self.header, self.attributes, self.sections, self.contents)
+
+
+def _create_new_section(cls, parent, header):
+    return cls(parent=parent,
+               header=header,
+               attributes={},
+               sections=[],
+               contents=[])
+
+
+def _update_attributes(section, attributes):
+    """Update the attributes on a section."""
+    utils.update_dict(section.attributes, attributes)
 
 
 def _append_section(last_section, section):
@@ -148,4 +164,4 @@ def _append_section(last_section, section):
     ) or section.header.level > last_section.header.level:
         last_section.sections.append(section)
     else:
-        _append_section(last_section._parent, section)
+        _append_section(last_section.parent, section)

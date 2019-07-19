@@ -1,10 +1,11 @@
-ship: fix lint test
+ship: lint test fix
+	# SHIP IT
 
 init:
 	# python2
-	virtualenv --python=python2 py3
-	py3/bin/pip install -r requirements.txt
-	py3/bin/pip install pytest
+	virtualenv --python=python2 py2
+	py2/bin/pip install -r requirements.txt
+	py2/bin/pip install pytest
 	# python3
 	virtualenv --python=python3 py3
 	py3/bin/pip install -r requirements.txt
@@ -18,7 +19,7 @@ lint:
 
 test2:
 	# Testing python2
-	py3/bin/py.test -vvv
+	py2/bin/py.test -vvv
 
 test3:
 	# Testing python3
@@ -27,4 +28,4 @@ test3:
 test: test2 test3
 
 clean:
-	rm -rf py3 py3
+	rm -rf py2 py3

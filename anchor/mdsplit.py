@@ -45,6 +45,7 @@ BLOCK_MAYBE_RE = re.compile(r'    [^ ].*$')
 ATTR_IDENTIFIER_RE = re.compile(r"^yaml .*@$")
 
 
+# pylint: disable=too-many-branches
 def split(md_text):
     """Split the markdown text into its components."""
     lines = md_text.split('\n')
@@ -124,7 +125,8 @@ def split(md_text):
     return components
 
 
-class Header(object):
+class Header:
+    """A header in markdown, i.e. ``# header``"""
     TYPE = "HEADER"
 
     def __init__(self, raw, level, anchor, text):
@@ -139,6 +141,7 @@ class Header(object):
         self.text = text
 
     def to_dict(self):
+        """serialize."""
         return {
             "type": self.TYPE,
             "raw": self.raw,
@@ -155,12 +158,14 @@ class Header(object):
     def _tuple(self):
         return (self.raw, self.anchor, self.text)
 
+    #pylint: disable=protected-access
     def __eq__(self, other):
         return isinstance(other,
                           self.__class__) and self._tuple() == other._tuple()
 
 
-class Code(object):
+class Code:
+    """A code block in markdown, either fenced or indented."""
     TYPE = "CODE"
 
     def __init__(self, raw, identifier, text):
@@ -171,6 +176,7 @@ class Code(object):
                                   and ATTR_IDENTIFIER_RE.match(identifier))
 
     def to_dict(self):
+        """serialize."""
         return {
             "type": self.TYPE,
             "raw": self.raw,
@@ -186,12 +192,14 @@ class Code(object):
     def _tuple(self):
         return (self.raw, self.identifier, self.text)
 
+    #pylint: disable=protected-access
     def __eq__(self, other):
         return isinstance(other,
                           self.__class__) and self._tuple() == other._tuple()
 
 
-class CodeBuilder(object):
+class CodeBuilder:
+    """Builder for creating a code block when parsing."""
     def __init__(self, raw_start, is_indented, identifier):
         self.is_indented = is_indented
         self.identifier = identifier
@@ -201,6 +209,7 @@ class CodeBuilder(object):
             self.text.append(raw_start)
 
     def append(self, line):
+        """Append a line."""
         self.raw_lines.append(line)
         if self.is_indented:
             self.text.append(line[4:])
@@ -208,15 +217,21 @@ class CodeBuilder(object):
             self.text.append(line)
 
     def append_raw(self, raw_line):
+        """Append a raw line."""
         self.raw_lines.append(raw_line)
 
     def build(self):
+        """Build into a Code object."""
         return Code(raw=self.raw_lines,
                     identifier=self.identifier,
                     text=self.text)
 
 
-class Text(object):
+class Text:
+    """A text block in markdown.
+
+    This is anything that isn't either a header or code.
+    """
     TYPE = "TEXT"
 
     def __init__(self, raw=None):
@@ -227,9 +242,11 @@ class Text(object):
         self.raw = raw
 
     def append(self, line):
+        """Append a line."""
         self.raw.append(line)
 
     def to_dict(self):
+        """serialize."""
         return {
             "type": self.TYPE,
             "raw": self.raw,
@@ -241,22 +258,24 @@ class Text(object):
     def _tuple(self):
         return (self.raw, )
 
+    # pylint: disable=protected-access
     def __eq__(self, other):
         return isinstance(other,
                           self.__class__) and self._tuple() == other._tuple()
 
 
 def from_dict(dct):
+    """Attempt to deserialize an arbitrary dictionry to either Code, Header or Text."""
     if dct['type'] == 'TEXT':
         return Text(raw=dct['raw'])
-    elif dct['type'] == 'HEADER':
+    if dct['type'] == 'HEADER':
         return Header(raw=dct['raw'],
                       level=dct['level'],
                       anchor=dct['anchor'],
                       text=dct['text'])
-    elif dct['type'] == 'CODE':
+    if dct['type'] == 'CODE':
         return Code(raw=dct['raw'],
                     text=dct['text'],
                     identifier=dct['identifier'])
-    else:
-        raise TypeError("Invalid dct: {}", dct)
+
+    raise TypeError("Invalid dct: {}".format(dct))

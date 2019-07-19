@@ -14,6 +14,7 @@
 # Unless you explicitly state otherwise, any contribution intentionally submitted
 # for inclusion in the work by you, as defined in the Apache-2.0 license, shall
 # be dual licensed as above, without any additional terms or conditions.
+"""Utility functions."""
 from __future__ import unicode_literals
 import six
 from six import PY2
@@ -37,20 +38,22 @@ def update_dict(first, second):
 
 
 def to_unicode_recurse(value):
+    """Ensure that all text values are unicode."""
     if not PY2:
         return value
     if isinstance(value, list):
         return [to_unicode_recurse(v) for v in value]
-    elif isinstance(value, dict):
+    if isinstance(value, dict):
         return {
             to_unicode(key): to_unicode_recurse(value)
             for key, value in six.iteritems(value)
         }
-    else:
-        return to_unicode(value)
+
+    return to_unicode(value)
 
 
 def to_unicode(value):
+    """Ensure that the value, if text, is unicode."""
     if not PY2:
         return value
     if isinstance(value, str):
