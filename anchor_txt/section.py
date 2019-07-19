@@ -127,6 +127,22 @@ class Section:
 
         return section
 
+    def to_lines(self):
+        """Serialize the section (and sub-sections) as text lines.
+
+        keep_attributes: if True, then keep the attribute code blocks. Otherwise,
+          discard them.
+        """
+        lines = self.header.to_lines() if self.header else []
+
+        for content in self.contents:
+            lines.extend(content.to_lines())
+
+        for section in self.sections:
+            lines.extend(section.to_lines())
+
+        return lines
+
     #pylint: disable=protected-access
     def __eq__(self, other):
         return isinstance(other,

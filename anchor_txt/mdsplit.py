@@ -150,6 +150,10 @@ class Header:
             "text": self.text,
         }
 
+    def to_lines(self):
+        """Serialize as text lines."""
+        return self.raw
+
     def __repr__(self):
         return "Header({} text={}, anchor={})".format(self.level,
                                                       repr(self.text),
@@ -199,6 +203,10 @@ class Code:
     def __eq__(self, other):
         return isinstance(other,
                           self.__class__) and self._tuple() == other._tuple()
+
+    def to_lines(self):
+        """Serialize as text lines."""
+        return self.raw
 
 
 class CodeBuilder:
@@ -254,6 +262,10 @@ class Text:
             "type": self.TYPE,
             "raw": self.raw,
         }
+
+    def to_lines(self):
+        """Serialize as text lines."""
+        return self.raw
 
     def __repr__(self):
         return "Text(raw={})".format(repr(self.raw[:10]))
