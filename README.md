@@ -22,7 +22,7 @@ An inline attribute looks like one of these:
 ```
 
 Fenced code block attributes look like below. They must include the identifier
-`yaml` and end with a `@`
+`yaml` (or `json`) and end with a `@`
 
     ```yaml @
     foo: None

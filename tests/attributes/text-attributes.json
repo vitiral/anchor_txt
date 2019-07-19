@@ -3,7 +3,10 @@
     "header": null,
     "attributes": {
         "an-attribute": null,
-        "another-attribute": true
+        "another-attribute": true,
+        "one": 1,
+        "two": 2,
+        "three": "3"
     },
     "sections": [],
     "contents": [
@@ -12,6 +15,7 @@
             "raw": [
                 "This is some text",
                 "with `@{an-attribute}` and `@{another-attribute: true}`",
+                "Many `@{{one: 1, two: 2, three: \"3\"}}`",
                 ""
             ]
         }

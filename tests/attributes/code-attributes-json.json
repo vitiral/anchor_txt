@@ -1,0 +1,41 @@
+{
+    "type": "SECTION",
+    "header": null,
+    "attributes": {
+        "attributes": "yes",
+        "good-ones": false,
+        "true": true,
+        "number": 42
+    },
+    "sections": [],
+    "contents": [
+        {
+            "type": "CODE",
+            "raw": [
+                "```json @",
+                "{",
+                "    \"attributes\": \"yes\",",
+                "    \"good-ones\": false,",
+                "    \"true\": true,",
+                "    \"number\": 42",
+                "}",
+                "```"
+            ],
+            "text": [
+                "{",
+                "    \"attributes\": \"yes\",",
+                "    \"good-ones\": false,",
+                "    \"true\": true,",
+                "    \"number\": 42",
+                "}"
+            ],
+            "identifier": "json @",
+            "attribute_format": "json"
+        },
+        {
+            "type": "TEXT",
+            "raw": [""]
+        }
+    ]
+}
+

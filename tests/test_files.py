@@ -70,5 +70,8 @@ class TestAttributes(unittest.TestCase):
     def test_code_attributes(self):
         self.run_file('code-attributes')
 
+    def test_code_attributes(self):
+        self.run_file('code-attributes-json')
+
     def test_text_attributes(self):
         self.run_file('text-attributes')
