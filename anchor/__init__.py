@@ -12,10 +12,13 @@ def main(argv):
     import yaml
 
     parser = argparse.ArgumentParser(
-        description='Process a markdown file into sections and attributes and print to stdout'
+        description=
+        'Process a markdown file into sections and attributes and print to stdout'
     )
     parser.add_argument('path', help='path to a markdown file')
-    parser.add_argument('--format', help='format to output to (json or yaml)', default='json')
+    parser.add_argument('--format',
+                        help='format to output to (json or yaml)',
+                        default='json')
     args = parser.parse_args(argv)
 
     sys.stderr.write('args.path={}\n'.format(args.path))

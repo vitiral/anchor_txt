@@ -32,4 +32,3 @@ class TestUtils(unittest.TestCase):
             assert False
         except ValueError:
             pass
-

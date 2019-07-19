@@ -5,14 +5,13 @@ init:
 	virtualenv --python=python2 env2
 	env2/bin/pip install -r requirements.txt
 	env2/bin/pip install pytest
-	
 	# python3
 	virtualenv --python=python3 env3
 	env3/bin/pip install -r requirements.txt
 	env3/bin/pip install pytest yapf pylint
 
 fix:
-	env3/bin/yapf
+	env3/bin/yapf --in-place -r anchor tests
 
 lint:
 	env3/bin/pylint

@@ -10,7 +10,8 @@ KEY_LEVEL = "level"
 KEY_ANCHOR = "anchor"
 KEY_CODE_IDENTIFIER = "iden"
 
-HEADER_RE = re.compile(r'''
+HEADER_RE = re.compile(
+    r'''
 (?P<level>^\#+)         # level
 \s*
 (?P<text>.*?)           # text
@@ -18,8 +19,7 @@ HEADER_RE = re.compile(r'''
     (?P<anchor>.*?)
 \})?                    # closing anchor
 \s*$
-'''
-, re.VERBOSE)
+''', re.VERBOSE)
 
 FENCE_RE = re.compile(r'^```\s*(?P<iden>[^`]*?)\s*$')
 EMPTY_RE = re.compile(r'^\s*$')
@@ -41,9 +41,7 @@ def split(md_text):
         line = utils.to_unicode(line)
         # Code indented
         mat = BLOCK_MAYBE_RE.match(line)
-        if (mat
-                and not code_builder
-                and components
+        if (mat and not code_builder and components
                 and isinstance(components[-1], Text)
                 and components[-1].raw[-1] == ""):
             code_builder = CodeBuilder(line, True, None)
@@ -68,7 +66,9 @@ def split(md_text):
                 components.append(code_builder.build())
                 code_builder = None
             else:
-                code_builder = CodeBuilder(line, False, mat.groupdict()[KEY_CODE_IDENTIFIER])
+                code_builder = CodeBuilder(
+                    line, False,
+                    mat.groupdict()[KEY_CODE_IDENTIFIER])
             continue
 
         if code_builder:
@@ -86,8 +86,7 @@ def split(md_text):
                 text=[groups[KEY_TEXT]],
             )
 
-            if (components
-                    and isinstance(components[-1], Header)
+            if (components and isinstance(components[-1], Header)
                     and components[-1].level == header.level):
                 # If the last line was a header of the same level, merge them
                 components[-1].text.extend(header.text)
@@ -133,13 +132,16 @@ class Header(object):
         }
 
     def __repr__(self):
-        return "Header({} text={}, anchor={})".format(self.level, repr(self.text), repr(self.anchor))
+        return "Header({} text={}, anchor={})".format(self.level,
+                                                      repr(self.text),
+                                                      repr(self.anchor))
 
     def _tuple(self):
         return (self.raw, self.anchor, self.text)
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self._tuple() == other._tuple()
+        return isinstance(other,
+                          self.__class__) and self._tuple() == other._tuple()
 
 
 class Code(object):
@@ -149,7 +151,8 @@ class Code(object):
         self.raw = raw
         self.identifier = identifier
         self.text = text
-        self.is_attributes = bool(identifier and ATTR_IDENTIFIER_RE.match(identifier))
+        self.is_attributes = bool(identifier
+                                  and ATTR_IDENTIFIER_RE.match(identifier))
 
     def to_dict(self):
         return {
@@ -161,14 +164,15 @@ class Code(object):
         }
 
     def __repr__(self):
-        return "Code(identifier={}, text={})".format(repr(self.identifier), repr(self.text[:100]))
+        return "Code(identifier={}, text={})".format(repr(self.identifier),
+                                                     repr(self.text[:100]))
 
     def _tuple(self):
         return (self.raw, self.identifier, self.text)
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self._tuple() == other._tuple()
-
+        return isinstance(other,
+                          self.__class__) and self._tuple() == other._tuple()
 
 
 class CodeBuilder(object):
@@ -191,10 +195,9 @@ class CodeBuilder(object):
         self.raw_lines.append(raw_line)
 
     def build(self):
-        return Code(
-            raw=self.raw_lines,
-            identifier=self.identifier,
-            text=self.text)
+        return Code(raw=self.raw_lines,
+                    identifier=self.identifier,
+                    text=self.text)
 
 
 class Text(object):
@@ -220,18 +223,24 @@ class Text(object):
         return "Text(raw={})".format(repr(self.raw[:10]))
 
     def _tuple(self):
-        return (self.raw,)
+        return (self.raw, )
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self._tuple() == other._tuple()
+        return isinstance(other,
+                          self.__class__) and self._tuple() == other._tuple()
 
 
 def from_dict(dct):
     if dct['type'] == 'TEXT':
         return Text(raw=dct['raw'])
     elif dct['type'] == 'HEADER':
-        return Header(raw=dct['raw'], level=dct['level'], anchor=dct['anchor'], text=dct['text'])
+        return Header(raw=dct['raw'],
+                      level=dct['level'],
+                      anchor=dct['anchor'],
+                      text=dct['text'])
     elif dct['type'] == 'CODE':
-        return Code(raw=dct['raw'], text=dct['text'], identifier=dct['identifier'])
+        return Code(raw=dct['raw'],
+                    text=dct['text'],
+                    identifier=dct['identifier'])
     else:
         raise TypeError("Invalid dct: {}", dct)

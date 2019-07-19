@@ -1,4 +1,3 @@
-
 import os
 import json
 import unittest
@@ -15,6 +14,7 @@ def read(path):
     with open(path) as f:
         return f.read()
 
+
 def read_json(path):
     with open(path) as f:
         return json.load(f)
@@ -26,7 +26,6 @@ class TestSplit(unittest.TestCase):
     - The *.md files contain what should be parsed.
     - The *.json files contain what is expected.
     """
-
     def run_file(self, name):
         expected = read_json(os.path.join(SPLITS_DIR, name + '.json'))
         md = read(os.path.join(SPLITS_DIR, name + '.md'))
