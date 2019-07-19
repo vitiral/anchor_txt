@@ -27,13 +27,6 @@ def split_test(name):
     assert expected == result, "for file " + name
 
 
-def attr_test(name):
-    expected = read_json(os.path.join(ATTRS_DIR, name + '.json'))
-    md_path = os.path.join(ATTRS_DIR, name + '.md')
-    result = attributes.Section.from_md_path(md_path).to_dict()
-    assert expected == result, "for file " + name
-
-
 class TestSplit(unittest.TestCase):
     """
     This uses the data in tests/splits
@@ -56,9 +49,22 @@ class TestSplit(unittest.TestCase):
         split_test('code-fence')
 
 
+def attr_test(name):
+    expected = read_json(os.path.join(ATTRS_DIR, name + '.json'))
+    md_path = os.path.join(ATTRS_DIR, name + '.md')
+    result = attributes.Section.from_md_path(md_path).to_dict()
+    assert expected == result, "for file " + name
+
+
 class TestAttributes(unittest.TestCase):
     def test_word(self):
         attr_test('word')
 
     def test_header(self):
         attr_test('header')
+
+    def test_header_multi(self):
+        attr_test('sub-header')
+
+    def test_code_fence(self):
+        attr_test('code-fence')

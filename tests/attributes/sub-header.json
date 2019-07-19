@@ -1,0 +1,45 @@
+{
+    "type": "SECTION",
+    "header": null,
+    "attributes": {},
+    "sections": [
+        {
+            "type": "SECTION",
+            "header": {
+                "type": "HEADER",
+                "raw": ["# header"],
+                "text": ["header"],
+                "level": 1,
+                "anchor": null
+            },
+            "attributes": {},
+            "sections": [
+                {
+                    "type": "SECTION",
+                    "header": {
+                        "type": "HEADER",
+                        "raw": ["## sub-header"],
+                        "text": ["sub-header"],
+                        "level": 2,
+                        "anchor": null
+                    },
+                    "attributes": {},
+                    "sections": [],
+                    "contents": [
+                        {
+                            "type": "TEXT",
+                            "raw": ["text there", ""]
+                        }
+                    ]
+                }
+            ],
+            "contents": [
+                {
+                    "type": "TEXT",
+                    "raw": ["text here", ""]
+                }
+            ]
+        }
+    ],
+    "contents": []
+}

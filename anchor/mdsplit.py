@@ -1,3 +1,5 @@
+"""Split a markdown file into Header, Code or Text sections
+"""
 from __future__ import unicode_literals
 import re
 

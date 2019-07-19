@@ -1,0 +1,32 @@
+{
+    "type": "SECTION",
+    "header": null,
+    "attributes": {},
+    "sections": [
+        {
+            "type": "SECTION",
+            "header": {
+                "type": "HEADER",
+                "raw": ["# code"],
+                "text": ["code"],
+                "level": 1,
+                "anchor": null
+            },
+            "attributes": {},
+            "sections": [],
+            "contents": [
+                {
+                    "type": "CODE",
+                    "raw": ["```fence", "this is code", "```"],
+                    "text": ["this is code"],
+                    "identifier": "fence"
+                },
+                {
+                    "type": "TEXT",
+                    "raw": [""]
+                }
+            ]
+        }
+    ],
+    "contents": []
+}

@@ -1,21 +1,4 @@
 from __future__ import unicode_literals
-"""
-
-```yaml @
-a:
-    - b
-    - c
-```
-
-```yaml @
-a:
-    d: 2
-    e: 3
-```
-
-"""
-
-SINGLES = '__singles__'
 
 
 def update_dict(first, second):

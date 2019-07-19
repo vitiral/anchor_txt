@@ -10,7 +10,7 @@ tags intelligently.
 Calling `mdsplit.split(md_text)` returns a list of tokens of the following
 types:
 - HEADER: A `#+\w+` section. Contains `raw` (the entire header), `anchor` which is any defined
-  link-anchors (i.e. `{#my-anchor}) and `text` which is `raw` stripped of
+  link-anchors (i.e. `{#my-anchor}`) and `text` which is `raw` stripped of
   the anchor text. Headers directly next to eachother will be joined (as they are in markdown).
 - CODE: contains `raw` (the entire code block), `idenitifer` which is any text
   after the initial " \`\`\`" fence, and `text` which is `raw` stripped of any

@@ -43,10 +43,10 @@ class Section(object):
                 if current_section.header is None or cmt.level < current_section.header.level:
                     parent = current_section
                 else:
-                    parent = current_section.parent
+                    parent = current_section._parent
 
                 new_section = Section.new(parent=parent, header=cmt)
-                current_section.append_section(new_section)
+                append_section(current_section, new_section)
                 current_section = new_section
             elif isinstance(cmt, mdsplit.Code):
                 if cmt.identifier and ATTR_IDENTIFIER_RE.match(cmt.identifier):
@@ -93,13 +93,6 @@ class Section(object):
     def update_attributes(self, attributes):
         utils.update_dict(self.attributes, attributes)
 
-    def append_section(self, section):
-        assert section.header.level > 0
-        if self.header is None or section.header.level < self.header.level:
-            self.sections.append(section)
-        else:
-            self._parent.append_section(section)
-
     def __eq__(self, other):
         return isinstance(other, self.__class__) and other._tuple() == self._tuple()
 
@@ -108,3 +101,17 @@ class Section(object):
 
     def _tuple(self):
         return (self.header, self.attributes, self.sections, self.contents)
+
+
+def append_section(last_section, section):
+    """ Appends the section to the correct parent, based on the level.
+
+    Called when digesting a list of sections.
+    """
+
+    assert section.header.level > 0
+    if last_section.header is None or section.header.level > last_section.header.level:
+        last_section.sections.append(section)
+    else:
+        append_section(last_section._parent, section)
+

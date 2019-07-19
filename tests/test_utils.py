@@ -9,7 +9,7 @@ import unittest
 from anchor import utils
 
 
-class TestFiles(unittest.TestCase):
+class TestUtils(unittest.TestCase):
     def test_update_empty(self):
         a = {'a': 2}
         expect = copy.deepcopy(a)
