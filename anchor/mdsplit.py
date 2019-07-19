@@ -24,6 +24,8 @@ EMPTY_RE = re.compile(r'^\s*$')
 
 BLOCK_MAYBE_RE = re.compile(r'    [^ ].*$')
 
+ATTR_IDENTIFIER_RE = re.compile(r"^yaml .*@$")
+
 
 def split(md_text):
     """Split the markdown text into its components."""
@@ -145,6 +147,7 @@ class Code(object):
         self.raw = raw
         self.identifier = identifier
         self.text = text
+        self.is_attributes = identifier and ATTR_IDENTIFIER_RE.match(identifier)
 
     def to_dict(self):
         return {
@@ -152,6 +155,7 @@ class Code(object):
             "raw": self.raw,
             "identifier": self.identifier,
             "text": self.text,
+            "is_attributes": False,
         }
 
     def __repr__(self):

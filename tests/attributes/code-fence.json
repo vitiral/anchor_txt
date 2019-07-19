@@ -19,7 +19,8 @@
                     "type": "CODE",
                     "raw": ["```fence", "this is code", "```"],
                     "text": ["this is code"],
-                    "identifier": "fence"
+                    "identifier": "fence",
+                    "is_attributes": false
                 },
                 {
                     "type": "TEXT",

@@ -9,8 +9,8 @@ import yaml
 from . import utils
 from . import mdsplit
 
-ATTR_IDENTIFIER_RE = re.compile(r"^yaml.*\s@$")
-ATTR_INLINE_RE = re.compile(r"`@(.*)`")
+ATTR_IDENTIFIER_RE = re.compile(r"^yaml .*@$")
+ATTR_INLINE_RE = re.compile(r"`@{(.*)}`")
 
 
 class Section(object):
@@ -38,6 +38,8 @@ class Section(object):
         root = cls.new(None, None)
         current_section = root
 
+        # Loop through the components, adding them to the correct section
+        # and storing attributes.
         for cmt in components:
             if isinstance(cmt, mdsplit.Header):
                 if current_section.header is None or cmt.level < current_section.header.level:
@@ -46,10 +48,10 @@ class Section(object):
                     parent = current_section._parent
 
                 new_section = Section.new(parent=parent, header=cmt)
-                append_section(current_section, new_section)
+                _append_section(current_section, new_section)
                 current_section = new_section
             elif isinstance(cmt, mdsplit.Code):
-                if cmt.identifier and ATTR_IDENTIFIER_RE.match(cmt.identifier):
+                if cmt.is_attributes:
                     current_section.update_attributes(yaml.load(cmt.text))
                 current_section.contents.append(cmt)
             else:
@@ -103,7 +105,7 @@ class Section(object):
         return (self.header, self.attributes, self.sections, self.contents)
 
 
-def append_section(last_section, section):
+def _append_section(last_section, section):
     """ Appends the section to the correct parent, based on the level.
 
     Called when digesting a list of sections.
@@ -113,5 +115,5 @@ def append_section(last_section, section):
     if last_section.header is None or section.header.level > last_section.header.level:
         last_section.sections.append(section)
     else:
-        append_section(last_section._parent, section)
+        _append_section(last_section._parent, section)
 
