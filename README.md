@@ -1,16 +1,16 @@
-anchor: markdown with attributes
+anchor: attributes in markdown
 
 Anchor adds the ability to embed attributes in markdown files so that external
 tools can more easily link them to eachother and code, as well as perform
 other operations.
 
-Use ``anchor.Section.from_md_path`` to load a markdown file.
+Use ``anchor_txt.Section.from_md_path`` to load a markdown file.
 
 # Markdown Syntax
-The syntax for anchor attributes is simple.
+The syntax for anchor_txt attributes is simple.
 
-- Headers of the form `# header {#anchor}` will have the anchor tag extracted and available
-  in Header.anchor
+- Headers of the form `# header {#anchor}` will have the `anchor` tag extracted and available
+  in `Header.anchor`
 - A header creates a Section, which can have sub `sections`.
 - Sections have attributes, which are embedded yaml either inline or in fenced
   code blocks, shown below.

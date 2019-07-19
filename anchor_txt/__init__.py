@@ -1,4 +1,4 @@
-# anchor: attributes in markdown
+# anchor_txt: attributes in markdown
 #
 # Copyright (C) 2019 Rett Berg <github.com/vitiral>
 #
@@ -15,13 +15,13 @@
 # for inclusion in the work by you, as defined in the Apache-2.0 license, shall
 # be dual licensed as above, without any additional terms or conditions.
 """
-anchor: markdown with attributes
+anchor_txt: markdown with attributes
 
 Anchor adds the ability to embed attributes in markdown files so that external
 tools can more easily link them to eachother and code, as well as perform
 other operations.
 
-Use ``anchor.Section.from_md_path`` to load a markdown file.
+Use ``anchor_txt.Section.from_md_path`` to load a markdown file.
 
 The syntax used is in the README.md
 """

@@ -1,4 +1,4 @@
-# anchor: attributes in markdown
+# anchor_txt: attributes in markdown
 #
 # Copyright (C) 2019 Rett Berg <github.com/vitiral>
 #

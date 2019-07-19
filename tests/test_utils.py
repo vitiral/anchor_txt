@@ -6,7 +6,7 @@ import os
 import copy
 import json
 import unittest
-from anchor import utils
+from anchor_txt import utils
 
 
 class TestUtils(unittest.TestCase):

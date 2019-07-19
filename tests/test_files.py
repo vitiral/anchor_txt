@@ -1,8 +1,8 @@
 import os
 import json
 import unittest
-from anchor import mdsplit
-from anchor import section
+from anchor_txt import mdsplit
+from anchor_txt import section
 
 SCRIPT_PATH = os.path.realpath(__file__)
 TEST_DIR = os.path.dirname(SCRIPT_PATH)

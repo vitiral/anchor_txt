@@ -1,5 +1,5 @@
-ship: lint test fix
-	# SHIP IT
+check: lint test fix
+	# SHIP IT!
 
 init:
 	# python2
@@ -9,13 +9,13 @@ init:
 	# python3
 	virtualenv --python=python3 py3
 	py3/bin/pip install -r requirements.txt
-	py3/bin/pip install pytest yapf pylint
+	py3/bin/pip install pytest yapf pylint twine
 
 fix:
-	py3/bin/yapf --in-place -r anchor tests
+	py3/bin/yapf --in-place -r anchor_txt tests
 
 lint:
-	py3/bin/pylint anchor
+	py3/bin/pylint anchor_txt
 
 test2:
 	# Testing python2
