@@ -1,4 +1,6 @@
 from __future__ import unicode_literals
+import six
+from six import PY2
 
 
 def update_dict(first, second):
@@ -8,7 +10,7 @@ def update_dict(first, second):
     """
     second = to_unicode_recurse(second)
     invalid = []
-    for key, value in second.items():
+    for key, value in six.iteritems(second):
         if key in first:
             invalid.append(key)
         else:
@@ -19,18 +21,22 @@ def update_dict(first, second):
 
 
 def to_unicode_recurse(value):
+    if not PY2:
+        return value
     if isinstance(value, list):
         return [to_unicode_recurse(v) for v in value]
     elif isinstance(value, dict):
         return {
             to_unicode(key): to_unicode_recurse(value)
-            for key, value in value.items()
+            for key, value in six.iteritems(value)
         }
     else:
         return to_unicode(value)
 
 
 def to_unicode(value):
+    if not PY2:
+        return value
     if isinstance(value, str):
         value = value.decode('utf-8')
     return value

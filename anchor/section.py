@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 import re
+import six
 
 import yaml
 
@@ -56,14 +57,14 @@ class Section(object):
             elif isinstance(cmt, mdsplit.Code):
                 if cmt.is_attributes:
                     code_txt = '\n'.join(cmt.text)
-                    current_section.update_attributes(yaml.load(code_txt))
+                    current_section.update_attributes(yaml.safe_load(code_txt))
                 current_section.contents.append(cmt)
             else:
                 assert isinstance(cmt, mdsplit.Text)
                 for line in cmt.raw:
                     for match in ATTR_INLINE_RE.finditer(line):
-                        value = utils.to_unicode(yaml.load(match.group(1)))
-                        if isinstance(value, unicode):
+                        value = utils.to_unicode(yaml.safe_load(match.group(1)))
+                        if isinstance(value, six.text_type):
                             value = {value: None}
                         current_section.update_attributes(value)
 

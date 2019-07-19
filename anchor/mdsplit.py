@@ -2,6 +2,8 @@
 """
 from __future__ import unicode_literals
 import re
+import six
+from . import utils
 
 KEY_TEXT = "text"
 KEY_LEVEL = "level"
@@ -36,7 +38,7 @@ def split(md_text):
     code_builder = None
 
     for line in lines:
-        line = unicode(line)
+        line = utils.to_unicode(line)
         # Code indented
         mat = BLOCK_MAYBE_RE.match(line)
         if (mat
@@ -114,7 +116,7 @@ class Header(object):
         assert isinstance(raw, list)
         assert isinstance(level, int)
         if anchor is not None:
-            assert isinstance(anchor, (str, unicode))
+            assert isinstance(anchor, six.text_type)
         assert isinstance(text, list)
         self.raw = raw
         self.level = level
