@@ -11,7 +11,7 @@
         "raw": ["```fence", "this is code", "```"],
         "text": ["this is code"],
         "identifier": "fence",
-        "is_attributes": false
+        "attribute_format": null
     },
     {
         "type": "TEXT",

@@ -42,7 +42,7 @@ EMPTY_RE = re.compile(r'^\s*$')
 
 BLOCK_MAYBE_RE = re.compile(r'    [^ ].*$')
 
-ATTR_IDENTIFIER_RE = re.compile(r"^yaml .*@$")
+ATTR_IDENTIFIER_RE = re.compile(r"^(yaml|json) .*@$")
 
 
 # pylint: disable=too-many-branches
@@ -172,8 +172,11 @@ class Code:
         self.raw = raw
         self.identifier = identifier
         self.text = text
-        self.is_attributes = bool(identifier
-                                  and ATTR_IDENTIFIER_RE.match(identifier))
+        self.attribute_format = None
+        if identifier:
+           m = ATTR_IDENTIFIER_RE.match(identifier)
+           if m is not None:
+               self.attribute_format = m.group(1)
 
     def to_dict(self):
         """serialize."""
@@ -182,7 +185,7 @@ class Code:
             "raw": self.raw,
             "identifier": self.identifier,
             "text": self.text,
-            "is_attributes": self.is_attributes,
+            "attribute_format": self.attribute_format,
         }
 
     def __repr__(self):

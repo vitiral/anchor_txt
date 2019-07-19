@@ -29,6 +29,9 @@ Fenced code block attributes look like below. They must include the identifier
     bar: 2
     ```
 
+Attributes blocks within a Section are combined through the same process as
+`dict.update`, except overlapping keys throw an error.
+
 # Developer
 Run `make init` to create the necessary virtualenv
 

@@ -77,7 +77,7 @@ class Section:
                 _append_section(current_section, new_section)
                 current_section = new_section
             elif isinstance(cmt, mdsplit.Code):
-                if cmt.is_attributes:
+                if cmt.attribute_format:
                     code_txt = '\n'.join(cmt.text)
                     _update_attributes(current_section,
                                        yaml.safe_load(code_txt))
