@@ -1,24 +1,45 @@
-This is an ultra-simple library for splitting up markdown into component pieces
-that are "interesting" for a machine to parse.
+anchor: markdown with attributes
 
-This library is intended to enable using markdown for storing data more
-generally, i.e. putting attributes of the markdown in code blocks and using
-tags intelligently.
+Anchor adds the ability to embed attributes in markdown files so that external
+tools can more easily link them to eachother and code, as well as perform
+other operations.
 
-# API
+Use ``anchor.Section.from_md_path`` to load a markdown file.
 
-Calling `mdsplit.split(md_text)` returns a list of tokens of the following
-types:
-- HEADER: A `#+\w+` section. Contains `raw` (the entire header), `anchor` which is any defined
-  link-anchors (i.e. `{#my-anchor}`) and `text` which is `raw` stripped of
-  the anchor text. Headers directly next to eachother will be joined (as they are in markdown).
-- CODE: contains `raw` (the entire code block), `idenitifer` which is any text
-  after the initial " \`\`\`" fence, and `text` which is `raw` stripped of any
-  fences or identifiers. Indented code blocks are also parsed. They will have
-  empty identifier and `text` is de-indented.
-- TEXT: contains only `raw`, which is the raw text between identifiers.
+# Markdown Syntax
+The syntax for anchor attributes is simple.
 
-The basic premise is that if you join the `raw` from all the tokens you will
-have the original markdown.
+- Headers of the form `# header {#anchor}` will have the anchor tag extracted and available
+  in Header.anchor
+- A header creates a Section, which can have sub `sections`.
+- Sections have attributes, which are embedded yaml either inline or in fenced
+  code blocks, shown below.
 
-To this end, `mdsplit.join(md_tokens)` will do exactly that.
+An inline attribute looks like one of these:
+```
+`@{foo}`
+`@{bar: 2}`
+```
+
+Fenced code block attributes look like below. They must include the identifier
+`yaml` and end with a `@`
+
+    ```yaml @
+    foo: None
+    bar: 2
+    ```
+
+# License
+
+The source code is Licensed under either of
+
+* Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or
+  http://www.apache.org/licenses/LICENSE-2.0)
+* MIT license ([LICENSE-MIT](LICENSE-MIT) or
+  http://opensource.org/licenses/MIT)
+
+at your option.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall
+be dual licensed as above, without any additional terms or conditions.
