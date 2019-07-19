@@ -25,7 +25,7 @@ Fenced code block attributes look like below. They must include the identifier
 `yaml` (or `json`) and end with a `@`
 
     ```yaml @
-    foo: None
+    foo: null
     bar: 2
     ```
 
