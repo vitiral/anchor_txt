@@ -26,7 +26,7 @@ def read(*names, **kwargs):
 setup(
   name = 'anchor_txt',
   packages = ['anchor_txt'],
-  version = '0.1',
+  version = '0.1.1',
   license='MIT or APACHE-2.0',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'attributes in markdown',
   long_description=read('README.md'),

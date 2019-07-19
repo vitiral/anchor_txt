@@ -17,9 +17,9 @@
 """
 anchor_txt: markdown with attributes
 
-Anchor adds the ability to embed attributes in markdown files so that external
-tools can more easily link them to eachother and code, as well as perform
-other operations.
+anchor_txt adds the ability to embed attributes in markdown files so that
+external tools can more easily link them to eachother and code, as well as
+perform other operations.
 
 Use ``anchor_txt.Section.from_md_path`` to load a markdown file.
 

@@ -1,6 +1,12 @@
 check: lint test fix
 	# SHIP IT!
 
+ship: check upload
+	py3/bin/python setup.py sdist
+
+upload: check
+	py3/bin/twine upload sdist/*
+
 init:
 	# python2
 	virtualenv --python=python2 py2
@@ -28,4 +34,4 @@ test3:
 test: test2 test3
 
 clean:
-	rm -rf py2 py3
+	rm -rf py2 py3 dist anchor_txt.egg-info

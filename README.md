@@ -1,6 +1,6 @@
-anchor: attributes in markdown
+anchor_txt: attributes in markdown
 
-Anchor adds the ability to embed attributes in markdown files so that external
+anchor_txt adds the ability to embed attributes in markdown files so that external
 tools can more easily link them to eachother and code, as well as perform
 other operations.
 
