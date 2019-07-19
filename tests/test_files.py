@@ -3,7 +3,7 @@ import os
 import json
 import unittest
 from anchor import mdsplit
-from anchor import attributes
+from anchor import section
 
 SCRIPT_PATH = os.path.realpath(__file__)
 TEST_DIR = os.path.dirname(SCRIPT_PATH)
@@ -20,57 +20,56 @@ def read_json(path):
         return json.load(f)
 
 
-def split_test(name):
-    expected = read_json(os.path.join(SPLITS_DIR, name + '.json'))
-    md = read(os.path.join(SPLITS_DIR, name + '.md'))
-    result = [c.to_dict() for c in mdsplit.split(md)]
-    assert expected == result, "for file " + name
-
-
 class TestSplit(unittest.TestCase):
     """
     This uses the data in tests/splits
     - The *.md files contain what should be parsed.
     - The *.json files contain what is expected.
     """
+
+    def run_file(self, name):
+        expected = read_json(os.path.join(SPLITS_DIR, name + '.json'))
+        md = read(os.path.join(SPLITS_DIR, name + '.md'))
+        result = [c.to_dict() for c in mdsplit.split(md)]
+        assert expected == result, "for file " + name
+
     def test_word(self):
-        split_test('word')
+        self.run_file('word')
 
     def test_header(self):
-        split_test('header')
+        self.run_file('header')
 
     def test_anchor(self):
-        split_test('anchor')
+        self.run_file('anchor')
 
     def test_header_multi(self):
-        split_test('header_multi')
+        self.run_file('header_multi')
 
     def test_code_fence(self):
-        split_test('code-fence')
-
-
-def attr_test(name):
-    expected = read_json(os.path.join(ATTRS_DIR, name + '.json'))
-    md_path = os.path.join(ATTRS_DIR, name + '.md')
-    result = attributes.Section.from_md_path(md_path).to_dict()
-    assert expected == result, "for file " + name
+        self.run_file('code-fence')
 
 
 class TestAttributes(unittest.TestCase):
+    def run_file(self, name):
+        expected = read_json(os.path.join(ATTRS_DIR, name + '.json'))
+        md_path = os.path.join(ATTRS_DIR, name + '.md')
+        result = section.Section.from_md_path(md_path).to_dict()
+        assert expected == result, "for file " + name
+
     def test_word(self):
-        attr_test('word')
+        self.run_file('word')
 
     def test_header(self):
-        attr_test('header')
+        self.run_file('header')
 
     def test_header_multi(self):
-        attr_test('sub-header')
+        self.run_file('sub-header')
 
     def test_code_fence(self):
-        attr_test('code-fence')
+        self.run_file('code-fence')
 
     def test_code_attributes(self):
-        attr_test('code-attributes')
+        self.run_file('code-attributes')
 
     def test_text_attributes(self):
-        attr_test('text-attributes')
+        self.run_file('text-attributes')

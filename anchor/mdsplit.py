@@ -233,5 +233,3 @@ def from_dict(dct):
         return Code(raw=dct['raw'], text=dct['text'], identifier=dct['identifier'])
     else:
         raise TypeError("Invalid dct: {}", dct)
-
-
