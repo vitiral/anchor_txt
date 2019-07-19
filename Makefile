@@ -2,6 +2,9 @@ check: lint test fix
 	# SHIP IT!
 
 ship: check
+	rm -rf pycheck/
+	virtualenv --python=python3 pycheck
+	pycheck/bin/pip install .
 	py3/bin/python setup.py sdist
 	# run: py3/bin/twine upload dist/*
 

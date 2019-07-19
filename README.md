@@ -29,6 +29,12 @@ Fenced code block attributes look like below. They must include the identifier
     bar: 2
     ```
 
+# Developer
+Run `make init` to create the necessary virtualenv
+
+Run `make test` for basic tests or `make check` for lints and formatting.
+
+
 # License
 
 The source code is Licensed under either of
