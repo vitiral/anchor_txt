@@ -173,10 +173,10 @@ class Code:
         self.identifier = identifier
         self.text = text
         self.attribute_format = None
-        if identifier:
-           m = ATTR_IDENTIFIER_RE.match(identifier)
-           if m is not None:
-               self.attribute_format = m.group(1)
+
+        attr_fmt = ATTR_IDENTIFIER_RE.match(identifier) if identifier else None
+        if attr_fmt is not None:
+            self.attribute_format = attr_fmt.group(1)
 
     def to_dict(self):
         """serialize."""

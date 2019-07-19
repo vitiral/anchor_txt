@@ -1,4 +1,4 @@
-check: lint test fix
+check: fix lint test
 	# SHIP IT!
 
 ship: check
