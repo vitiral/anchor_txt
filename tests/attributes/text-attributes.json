@@ -1,0 +1,20 @@
+{
+    "type": "SECTION",
+    "header": null,
+    "attributes": {
+        "an-attribute": null,
+        "another-attribute": true
+    },
+    "sections": [],
+    "contents": [
+        {
+            "type": "TEXT",
+            "raw": [
+                "This is some text",
+                "with `@{an-attribute}` and `@{another-attribute: true}`",
+                ""
+            ]
+        }
+    ]
+}
+

@@ -1,0 +1,36 @@
+{
+    "type": "SECTION",
+    "header": null,
+    "attributes": {
+        "attributes": "yes",
+        "good-ones": false,
+        "true": true,
+        "number": 42
+    },
+    "sections": [],
+    "contents": [
+        {
+            "type": "CODE",
+            "raw": [
+                "```yaml @",
+                "attributes: \"yes\"",
+                "good-ones: no",
+                "\"true\": true",
+                "number: 42",
+                "```"
+            ],
+            "text": [
+                "attributes: \"yes\"",
+                "good-ones: no",
+                "\"true\": true",
+                "number: 42"
+            ],
+            "identifier": "yaml @",
+            "is_attributes": true
+        },
+        {
+            "type": "TEXT",
+            "raw": [""]
+        }
+    ]
+}

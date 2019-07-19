@@ -147,7 +147,7 @@ class Code(object):
         self.raw = raw
         self.identifier = identifier
         self.text = text
-        self.is_attributes = identifier and ATTR_IDENTIFIER_RE.match(identifier)
+        self.is_attributes = bool(identifier and ATTR_IDENTIFIER_RE.match(identifier))
 
     def to_dict(self):
         return {
@@ -155,7 +155,7 @@ class Code(object):
             "raw": self.raw,
             "identifier": self.identifier,
             "text": self.text,
-            "is_attributes": False,
+            "is_attributes": self.is_attributes,
         }
 
     def __repr__(self):

@@ -68,3 +68,9 @@ class TestAttributes(unittest.TestCase):
 
     def test_code_fence(self):
         attr_test('code-fence')
+
+    def test_code_attributes(self):
+        attr_test('code-attributes')
+
+    def test_text_attributes(self):
+        attr_test('text-attributes')

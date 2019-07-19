@@ -10,7 +10,7 @@ from . import utils
 from . import mdsplit
 
 ATTR_IDENTIFIER_RE = re.compile(r"^yaml .*@$")
-ATTR_INLINE_RE = re.compile(r"`@{(.*)}`")
+ATTR_INLINE_RE = re.compile(r"`@{(.*?)}`")
 
 
 class Section(object):
@@ -32,6 +32,9 @@ class Section(object):
             sections=[],
             contents=[])
 
+    def is_root(self):
+        return self.header is None
+
     @classmethod
     def from_md(cls, filename, md_text):
         components = mdsplit.split(md_text)
@@ -42,7 +45,7 @@ class Section(object):
         # and storing attributes.
         for cmt in components:
             if isinstance(cmt, mdsplit.Header):
-                if current_section.header is None or cmt.level < current_section.header.level:
+                if current_section.is_root() or cmt.level < current_section.header.level:
                     parent = current_section
                 else:
                     parent = current_section._parent
@@ -52,11 +55,18 @@ class Section(object):
                 current_section = new_section
             elif isinstance(cmt, mdsplit.Code):
                 if cmt.is_attributes:
-                    current_section.update_attributes(yaml.load(cmt.text))
+                    code_txt = '\n'.join(cmt.text)
+                    current_section.update_attributes(yaml.load(code_txt))
                 current_section.contents.append(cmt)
             else:
                 assert isinstance(cmt, mdsplit.Text)
-                # TODO: check for inline attributes
+                for line in cmt.raw:
+                    for match in ATTR_INLINE_RE.finditer(line):
+                        value = utils.to_unicode(yaml.load(match.group(1)))
+                        if isinstance(value, unicode):
+                            value = {value: None}
+                        current_section.update_attributes(value)
+
                 current_section.contents.append(cmt)
 
         return root
@@ -112,7 +122,7 @@ def _append_section(last_section, section):
     """
 
     assert section.header.level > 0
-    if last_section.header is None or section.header.level > last_section.header.level:
+    if last_section.is_root() or section.header.level > last_section.header.level:
         last_section.sections.append(section)
     else:
         _append_section(last_section._parent, section)
