@@ -1,0 +1,28 @@
+[
+    {
+        "type": "TEXT",
+        "raw": [
+            "This is text with a [ref]",
+            "",
+            "And [another].",
+            ""
+        ]
+    },
+    {
+        "type": "REFERENCE_LINK",
+        "raw": ["[ref]: https://google.com"],
+        "reference": "ref",
+        "link": "https://google.com"
+    },
+    {
+        "type": "REFERENCE_LINK",
+        "raw": ["[another]: https://facebook.com"],
+        "reference": "another",
+        "link": "https://facebook.com"
+    },
+    {
+        "type": "TEXT",
+        "raw": [""]
+    }
+]
+

@@ -50,6 +50,9 @@ class TestSplit(unittest.TestCase):
     def test_code_fence(self):
         self.run_test('code-fence')
 
+    def test_reference_links(self):
+        self.run_test('reference-links')
+
 
 class TestAttributes(unittest.TestCase):
     def run_test(self, name):
@@ -83,3 +86,6 @@ class TestAttributes(unittest.TestCase):
 
     def test_text_attributes(self):
         self.run_test('text-attributes')
+
+    def test_reference_links(self):
+        self.run_test('reference-links')

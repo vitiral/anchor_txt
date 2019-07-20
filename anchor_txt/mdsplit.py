@@ -37,6 +37,8 @@ HEADER_RE = re.compile(
 \s*$
 ''', re.VERBOSE)
 
+REFERENCE_LINK_RE = re.compile(r'^\[(.+)\]:\s*(.+?)\s*$')
+
 FENCE_RE = re.compile(r'^```\s*(?P<iden>[^`]*?)\s*$')
 EMPTY_RE = re.compile(r'^\s*$')
 
@@ -94,7 +96,7 @@ def split(md_text):
 
         # Headers
         mat = HEADER_RE.match(line)
-        if mat is not None:
+        if mat:
             groups = mat.groupdict()
             header = Header(
                 raw=[mat.group(0)],
@@ -112,6 +114,17 @@ def split(md_text):
                     components[-1].anchor = header.anchor
             else:
                 components.append(header)
+            continue
+
+        # ReferenceLink
+        mat = REFERENCE_LINK_RE.match(line)
+        if mat:
+            components.append(
+                ReferenceLink(
+                    raw=[line],
+                    reference=mat.group(1),
+                    link=mat.group(2),
+                ))
             continue
 
         if components and isinstance(components[-1], Text):
@@ -166,6 +179,40 @@ class Header:
     def __eq__(self, other):
         return isinstance(other,
                           self.__class__) and self._tuple() == other._tuple()
+
+
+class ReferenceLink:
+    """A reference link line, i.e. `[foo]: http://foo.com`"""
+    TYPE = "REFERENCE_LINK"
+
+    def __init__(self, raw, reference, link):
+        self.raw = raw
+        self.reference = reference
+        self.link = link
+
+    def to_dict(self):
+        """serialize."""
+        return {
+            "type": self.TYPE,
+            "raw": self.raw,
+            "reference": self.reference,
+            "link": self.link,
+        }
+
+    def to_lines(self):
+        """Serialize as text lines."""
+        return self.raw
+
+    def __repr__(self):
+        return "ReferenceLink({}: {})".format(self.reference, self.link)
+
+    #pylint: disable=protected-access
+    def __eq__(self, other):
+        return isinstance(other,
+                          self.__class__) and self._tuple() == other._tuple()
+
+    def _tuple(self):
+        return (self.raw, self.reference, self.link)
 
 
 class Code:

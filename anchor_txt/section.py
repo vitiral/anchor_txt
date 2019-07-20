@@ -76,6 +76,8 @@ class Section:
                                                   header=cmt)
                 _append_section(current_section, new_section)
                 current_section = new_section
+            elif isinstance(cmt, mdsplit.ReferenceLink):
+                current_section.contents.append(cmt)
             elif isinstance(cmt, mdsplit.Code):
                 if cmt.attribute_format:
                     code_txt = '\n'.join(cmt.text)
