@@ -200,12 +200,12 @@ class ReferenceLink:
 
     @classmethod
     def from_parts(cls, reference, link):
+        """Convert from parts"""
         return cls(
             raw=["[{}]: {}".format(reference, link)],
             reference=reference,
             link=link,
         )
-
 
     def to_dict(self):
         """serialize."""
