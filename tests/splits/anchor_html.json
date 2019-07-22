@@ -1,0 +1,13 @@
+[
+    {
+        "type": "HEADER",
+        "raw": ["# header <a id=\"anchor\"></a>"],
+        "text": ["header"],
+        "level": 1,
+        "anchor": "anchor"
+    },
+    {
+        "type": "TEXT",
+        "raw": [""]
+    }
+]

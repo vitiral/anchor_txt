@@ -24,16 +24,23 @@ from . import utils
 KEY_TEXT = "text"
 KEY_LEVEL = "level"
 KEY_ANCHOR = "anchor"
+KEY_ANCHOR_HTML = "anchor_html"
 KEY_CODE_IDENTIFIER = "iden"
 
 HEADER_RE = re.compile(
     r'''
-(?P<level>^\#+)         # level
+(?P<level>^\#+)          # level
 \s*
-(?P<text>.*?)           # text
-(?:\s*\{\#              # opening anchor
-    (?P<anchor>.*?)
-\})?                    # closing anchor
+(?P<text>.*?)            # text
+\s*
+(?:                      # open all anchors
+(?:\{\#                  # open anchor
+    (?P<anchor>.+?)
+\})                      # close anchor
+|(?:<a\s+id="            # open anchor_html
+    (?P<anchor_html>.+?)
+".*></a>)                # close anchor_html
+)?                       # close all anchors
 \s*$
 ''', re.VERBOSE)
 
@@ -98,10 +105,11 @@ def split(md_text):
         mat = HEADER_RE.match(line)
         if mat:
             groups = mat.groupdict()
+
             header = Header(
                 raw=[mat.group(0)],
                 level=len(groups[KEY_LEVEL]),
-                anchor=groups[KEY_ANCHOR],
+                anchor=groups[KEY_ANCHOR] or groups[KEY_ANCHOR_HTML],
                 text=[groups[KEY_TEXT]],
             )
 
@@ -165,7 +173,7 @@ class Header:
 
     def to_lines(self):
         """Serialize as text lines."""
-        return self.raw
+        return list(self.raw)
 
     def __repr__(self):
         return "Header({} text={}, anchor={})".format(self.level,
@@ -190,6 +198,15 @@ class ReferenceLink:
         self.reference = reference
         self.link = link
 
+    @classmethod
+    def from_parts(cls, reference, link):
+        return cls(
+            raw=["[{}]: {}".format(reference, link)],
+            reference=reference,
+            link=link,
+        )
+
+
     def to_dict(self):
         """serialize."""
         return {
@@ -201,7 +218,7 @@ class ReferenceLink:
 
     def to_lines(self):
         """Serialize as text lines."""
-        return self.raw
+        return list(self.raw)
 
     def __repr__(self):
         return "ReferenceLink({}: {})".format(self.reference, self.link)
@@ -253,7 +270,7 @@ class Code:
 
     def to_lines(self):
         """Serialize as text lines."""
-        return self.raw
+        return list(self.raw)
 
 
 class CodeBuilder:
@@ -312,7 +329,7 @@ class Text:
 
     def to_lines(self):
         """Serialize as text lines."""
-        return self.raw
+        return list(self.raw)
 
     def __repr__(self):
         return "Text(raw={})".format(repr(self.raw[:10]))

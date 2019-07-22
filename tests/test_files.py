@@ -53,6 +53,9 @@ class TestSplit(unittest.TestCase):
     def test_reference_links(self):
         self.run_test('reference-links')
 
+    def test_reference_links(self):
+        self.run_test('anchor_html')
+
 
 class TestAttributes(unittest.TestCase):
     def run_test(self, name):

@@ -29,6 +29,7 @@ from __future__ import print_function
 
 from .section import Section
 from .mdsplit import Header
+from .mdsplit import ReferenceLink
 from .mdsplit import Code
 from .mdsplit import Text
 
