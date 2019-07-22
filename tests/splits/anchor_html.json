@@ -7,6 +7,13 @@
         "anchor": "anchor"
     },
     {
+        "type": "HEADER",
+        "raw": ["## short <a id=\"short\" />"],
+        "text": ["short"],
+        "level": 2,
+        "anchor": "short"
+    },
+    {
         "type": "TEXT",
         "raw": [""]
     }

@@ -33,13 +33,13 @@ HEADER_RE = re.compile(
 \s*
 (?P<text>.*?)            # text
 \s*
-(?:                      # open all anchors
-(?:\{\#                  # open anchor
+(                      # open all anchors
+(\{\#                  # open anchor
     (?P<anchor>.+?)
 \})                      # close anchor
-|(?:<a\s+id="            # open anchor_html
+|(<a\s+id="            # open anchor_html
     (?P<anchor_html>.+?)
-".*></a>)                # close anchor_html
+"((.* />)|(.*></a>)))      # close anchor_html
 )?                       # close all anchors
 \s*$
 ''', re.VERBOSE)
